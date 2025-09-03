@@ -40,4 +40,4 @@ Check [example.c](example.c) for a compreensive usage guide.
 Both memm.h/memm.c are designed to be included alongside the project, but using another header to define desired macros before including memm.h is a good idea.
 
 ## license
-This library used the [MIT](https://choosealicense.com/licenses/mit/) license.
+[MIT](https://choosealicense.com/licenses/mit/) license.
