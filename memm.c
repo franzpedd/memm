@@ -105,7 +105,7 @@ static bool memm_unregister_allocation(void* ptr, const char* file, int line)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// External Implementations
 
-void memm_init()
+MEMM_API void memm_init()
 {
     memset(&g_memm, 0, sizeof(g_memm));
     #ifdef MEMM_ENABLE_LOGGING
@@ -113,7 +113,7 @@ void memm_init()
     #endif
 }
 
-void memm_shutdown()
+MEMM_API void memm_shutdown()
 {
     // cleanup tracking structures
     for (size_t i = 0; i < MEMM_HASH_TABLE_SIZE; i++) {
@@ -130,7 +130,7 @@ void memm_shutdown()
     #endif
 }
 
-void* memm_malloc(size_t size, const char* file, int line)
+MEMM_API void* memm_malloc(size_t size, const char* file, int line)
 {
     void* ptr = malloc(size);
     if (ptr) {
@@ -145,7 +145,7 @@ void* memm_malloc(size_t size, const char* file, int line)
     return ptr;
 }
 
-void* memm_calloc(size_t num, size_t size, const char *file, int line)
+MEMM_API void* memm_calloc(size_t num, size_t size, const char *file, int line)
 {
     void* ptr = calloc(num, size);
     if (ptr) {
@@ -160,7 +160,7 @@ void* memm_calloc(size_t num, size_t size, const char *file, int line)
     return ptr;
 }
 
-void* memm_realloc(void *ptr, size_t size, const char *file, int line)
+MEMM_API void* memm_realloc(void *ptr, size_t size, const char *file, int line)
 {
     if (ptr) {
         memm_unregister_allocation(ptr, file, line);
@@ -179,7 +179,7 @@ void* memm_realloc(void *ptr, size_t size, const char *file, int line)
     return new_ptr;
 }
 
-void memm_free(void *ptr, const char *file, int line)
+MEMM_API void memm_free(void *ptr, const char *file, int line)
 {
     if (memm_unregister_allocation(ptr, file, line)) {
         free(ptr);
@@ -194,27 +194,27 @@ void memm_free(void *ptr, const char *file, int line)
     }
 }
 
-size_t memm_get_current_usage()
+MEMM_API size_t memm_get_current_usage()
 {
     return g_memm.total_allocated - g_memm.total_freed;
 }
 
-size_t memm_get_peak_usage()
+MEMM_API size_t memm_get_peak_usage()
 {
     return g_memm.peak_memory;
 }
 
-size_t memm_get_allocation_count()
+MEMM_API size_t memm_get_allocation_count()
  {
     return g_memm.allocation_count;
 }
 
-size_t memm_get_free_count()
+MEMM_API size_t memm_get_free_count()
  {
     return g_memm.free_count;
 }
 
-int memm_get_stats_string(char *buffer, size_t buffer_size)
+MEMM_API int memm_get_stats_string(char *buffer, size_t buffer_size)
 {
     if(!buffer || buffer_size <= 0) {
         return -1;
@@ -253,7 +253,7 @@ int memm_get_stats_string(char *buffer, size_t buffer_size)
     return written;
 }
 
-int memm_get_allocations_string(char *buffer, size_t buffer_size)
+MEMM_API int memm_get_allocations_string(char *buffer, size_t buffer_size)
 {
     if (!buffer || buffer_size == 0) {
         return -1;
@@ -327,7 +327,7 @@ int memm_get_allocations_string(char *buffer, size_t buffer_size)
     return total_written;
 }
 
-int memm_get_leaks_string(char *buffer, size_t buffer_size)
+MEMM_API int memm_get_leaks_string(char *buffer, size_t buffer_size)
 {
     if (!buffer || buffer_size == 0) {
         return -1;

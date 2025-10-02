@@ -14,48 +14,65 @@
     #error "MEMM_HASH_TABLE_SIZE must be a power of 2 for hashing efficiency"
 #endif
 
+/// @brief compilation options
+#if defined(MEMM_BUILD_SHARED) // shared library
+    #if defined(_WIN32) || defined(_WIN64)
+        #if defined(MEMM_EXPORTS)
+            #define MEMM_API __declspec(dllexport)
+        #else
+            #define MEMM_API __declspec(dllimport)
+        #endif
+    #elif defined(__linux__) && !defined(__ANDROID__)
+        #define MEMM_API __attribute__((visibility("default")))
+    #else
+        #define MEMM_API
+    #endif
+#else
+    #define MEMM_API // static library
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 ///@brief initializes the memory manager
-void memm_init();
+MEMM_API void memm_init();
 
 /// @brief shutdows the memory manager
-void memm_shutdown();
+MEMM_API void memm_shutdown();
 
 /// @brief allocates memory
-void* memm_malloc(size_t size, const char* file, int line);
+MEMM_API void* memm_malloc(size_t size, const char* file, int line);
 
 /// @brief zeroed-allocates memory
-void* memm_calloc(size_t num, size_t size, const char* file, int line);
+MEMM_API void* memm_calloc(size_t num, size_t size, const char* file, int line);
 
 /// @brief realocates/changes size of a previously allocated memory block
-void* memm_realloc(void* ptr, size_t size, const char* file, int line);
+MEMM_API void* memm_realloc(void* ptr, size_t size, const char* file, int line);
 
 /// @brief deallocates memory
-void memm_free(void* ptr, const char* file, int line);
+MEMM_API void memm_free(void* ptr, const char* file, int line);
 
 /// @brief returns how much of the memory is being currently used
-size_t memm_get_current_usage();
+MEMM_API size_t memm_get_current_usage();
 
 /// @brief returns the peak usage, wich is how much bytes were simultaneously allocated
-size_t memm_get_peak_usage();
+MEMM_API size_t memm_get_peak_usage();
 
 /// @brief returns how many allocation calls were issued
-size_t memm_get_allocation_count();
+MEMM_API size_t memm_get_allocation_count();
 
 /// @brief returns how may free calls were issued
-size_t memm_get_free_count();
+MEMM_API size_t memm_get_free_count();
 
 /// @brief fills-out a buffer with statistics about the memory manager
-int memm_get_stats_string(char* buffer, size_t buffer_size);
+MEMM_API int memm_get_stats_string(char* buffer, size_t buffer_size);
 
 /// @brief fills-out a buffer with information about current tracked and no-long tracked allocations
-int memm_get_allocations_string(char* buffer, size_t buffer_size);
+MEMM_API int memm_get_allocations_string(char* buffer, size_t buffer_size);
 
 /// @brief fills-out a buffer with information about pottentially memory leaks
-int memm_get_leaks_string(char* buffer, size_t buffer_size);
+MEMM_API int memm_get_leaks_string(char* buffer, size_t buffer_size);
 
 /// @brief helper macros for stats, must have logging enable
 #ifdef MEMM_ENABLE_LOGGING
